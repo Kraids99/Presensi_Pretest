@@ -1,9 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Sistem Presensi Mahasiswa Otomatis</title>
+    <link rel="stylesheet" href="main.css" />
   </head>
-  <body></body>
+  <body>
+    <div class="header">
+      <h1>Sistem Presensi Mahasiswa</h1>
+      <p>
+        Gabungkan data log dan pretest untuk menghasilkan presensi dalam format
+        Excel
+      </p>
+    </div>
+
+    <div class="container">
+      <!-- log file upload -->
+      <div class="box">
+        <h2>Data Log</h2>
+        <div class="upload-area" id="logUploadArea">
+          <label for="logFile" class="upload-btn">📄 Pilih File Log</label>
+          <input
+            type="file"
+            id="logFile"
+            class="file-input"
+            accept=".csv,.xlsx,.xls"
+          />
+          <p style="margin-top: 15px; color: #7f8c8d">Format: CSV atau Excel</p>
+          <div class="file-info" id="logFileInfo">
+            <div class="file-name" id="logFileName"></div>
+            <div class="file-size" id="logFileSize"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- pretest file upload -->
+      <div class="box">
+        <h2>Data Pretest</h2>
+        <div class="upload-area" id="pretestUploadArea">
+          <label for="pretestFile" class="upload-btn">
+            📝 Pilih File Pretest
+          </label>
+          <input
+            type="file"
+            id="pretestFile"
+            class="file-input"
+            accept=".csv,.xlsx,.xls"
+          />
+          <p style="margin-top: 15px; color: #7f8c8d">Format: CSV atau Excel</p>
+          <div class="file-info" id="pretestFileInfo">
+            <div class="file-name" id="pretestFileName"></div>
+            <div class="file-size" id="pretestFileSize"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- download section -->
+    <div class="download-section">
+      <h2><span class="download-icon"></span>Download Hasil</h2>
+      <p style="color: #7f8c8d; margin-bottom: 20px">
+        File presensi akan dihasilkan setelah kedua file berhasil diunggah
+      </p>
+
+      <div class="status-indicator status-waiting" id="statusIndicator">
+        ⏳ Menunggu file log dan pretest
+      </div>
+
+      <div class="progress-bar" id="progressBar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <button
+        class="download-btn"
+        id="downloadBtn"
+        onclick="downloadHasil()"
+        disabled
+      >
+        💾 Download File Presensi
+      </button>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2025 Sistem Presensi Mahasiswa</p>
+    </div>
+    <script src="main.js"></script>
+  </body>
 </html>
