@@ -38,7 +38,7 @@ function handleFileUpload(inputId, fileType) {
   const fileName = document.getElementById(inputId + "Name");
   const fileSize = document.getElementById(inputId + "Size");
 
-  // Drag and drop functionality
+  // drag and drop functionality
   uploadArea.addEventListener("dragover", (e) => {
     e.preventDefault();
     uploadArea.classList.add("dragover");
@@ -62,13 +62,13 @@ function handleFileUpload(inputId, fileType) {
     if (input.files.length > 0) {
       const file = input.files[0];
 
-      // Update file info
+      // update file info
       fileName.textContent = file.name;
       fileSize.textContent = formatFileSize(file.size);
       fileInfo.classList.add("show");
       uploadArea.classList.add("file-selected");
 
-      // Update status
+      // update status
       if (fileType === "log") {
         logFileUploaded = true;
       } else {
@@ -77,7 +77,7 @@ function handleFileUpload(inputId, fileType) {
 
       updateStatus();
 
-      // Show success animation
+      // show success animation
       uploadArea.style.transform = "scale(1.02)";
       setTimeout(() => {
         uploadArea.style.transform = "scale(1)";
@@ -92,7 +92,7 @@ function downloadHasil() {
     return;
   }
 
-  // Show progress bar
+  // show progress bar
   const progressBar = document.getElementById("progressBar");
   const progressFill = document.getElementById("progressFill");
   const downloadBtn = document.getElementById("downloadBtn");
@@ -101,7 +101,7 @@ function downloadHasil() {
   downloadBtn.disabled = true;
   downloadBtn.textContent = "⏳ Memproses...";
 
-  // Simulate processing
+  // simulate processing
   let progress = 0;
   const interval = setInterval(() => {
     progress += Math.random() * 20;
@@ -113,7 +113,7 @@ function downloadHasil() {
       clearInterval(interval);
 
       setTimeout(() => {
-        // Create dummy download
+        // create dummy download
         const link = document.createElement("a");
         link.href =
           "data:text/csv;charset=utf-8," +
@@ -124,7 +124,7 @@ function downloadHasil() {
           ".csv";
         link.click();
 
-        // Reset UI
+        // reset UI
         progressBar.style.display = "none";
         progressFill.style.width = "0%";
         downloadBtn.disabled = false;
@@ -136,7 +136,7 @@ function downloadHasil() {
   }, 100);
 }
 
-// Initialize file handlers
+// initialize file handlers
 document.addEventListener("DOMContentLoaded", function () {
   handleFileUpload("logFile", "log");
   handleFileUpload("pretestFile", "pretest");
