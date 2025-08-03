@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return send_file('index.html')
 
 @app.route('/proses', methods=['POST'])
 def proses():
@@ -107,5 +107,8 @@ def proses():
         as_attachment=True
     )
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
+def handler(environ, start_response):
+    return app(environ, start_response)
