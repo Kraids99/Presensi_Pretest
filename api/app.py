@@ -4,7 +4,7 @@ from io import BytesIO
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Font
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../static')
 
 @app.route('/')
 def index():
