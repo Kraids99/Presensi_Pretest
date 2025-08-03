@@ -92,6 +92,9 @@ function downloadHasil() {
     return;
   }
 
+  const form = document.getElementById("presensiForm");
+  const formData = new FormData(form);
+
   // show progress bar
   const progressBar = document.getElementById("progressBar");
   const progressFill = document.getElementById("progressFill");
@@ -108,32 +111,46 @@ function downloadHasil() {
     if (progress > 100) progress = 100;
 
     progressFill.style.width = progress + "%";
+}, 100);
 
-    if (progress === 100) {
-      clearInterval(interval);
+  // Kirim ke Flask
+  fetch("/proses", {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => {
+      clearInterval(interval); // hentikan progress saat sudah dapat respon
+      if (!res.ok) throw new Error("Gagal memproses.");
+      return res.blob();
+    })
+    .then((blob) => {
+      progressFill.style.width = "100%";
 
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download =
+        "presensi_mahasiswa_" +
+        new Date().toISOString().split("T")[0] +
+        ".xlsx";
+      link.click();
+
+      // reset UI
       setTimeout(() => {
-        // create dummy download
-        const link = document.createElement("a");
-        link.href =
-          "data:text/csv;charset=utf-8," +
-          encodeURIComponent("Nama,NIM,Hadir\nContoh Student,123456,Ya");
-        link.download =
-          "presensi_mahasiswa_" +
-          new Date().toISOString().split("T")[0] +
-          ".csv";
-        link.click();
-
-        // reset UI
         progressBar.style.display = "none";
         progressFill.style.width = "0%";
         downloadBtn.disabled = false;
         downloadBtn.textContent = "💾 Download File Presensi";
-
         alert("File presensi berhasil didownload!");
       }, 500);
-    }
-  }, 100);
+    })
+    .catch((err) => {
+      clearInterval(interval);
+      alert("Terjadi kesalahan saat memproses file.");
+      progressBar.style.display = "none";
+      progressFill.style.width = "0%";
+      downloadBtn.disabled = false;
+      downloadBtn.textContent = "💾 Download File Presensi";
+    });
 }
 
 // initialize file handlers

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistem Presensi Mahasiswa Otomatis</title>
-    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="static/main.css" />
   </head>
   <body>
     <div class="header">
@@ -15,6 +15,7 @@
       </p>
     </div>
 
+     <form id="presensiForm" method="POST" action="/proses" enctype="multipart/form-data">
     <div class="container">
       <!-- log file upload -->
       <div class="box">
@@ -24,6 +25,7 @@
           <input
             type="file"
             id="logFile"
+            name="log" 
             class="file-input"
             accept=".csv,.xlsx,.xls"
           />
@@ -45,6 +47,7 @@
           <input
             type="file"
             id="pretestFile"
+            name="pretest" 
             class="file-input"
             accept=".csv,.xlsx,.xls"
           />
@@ -73,6 +76,7 @@
       </div>
 
       <button
+        type="button"
         class="download-btn"
         id="downloadBtn"
         onclick="downloadHasil()"
@@ -81,10 +85,11 @@
         💾 Download File Presensi
       </button>
     </div>
+</form>
 
     <div class="footer">
       <p>&copy; 2025 Sistem Presensi Mahasiswa</p>
     </div>
-    <script src="main.js"></script>
+    <script src="static/main.js"></script>
   </body>
 </html>
