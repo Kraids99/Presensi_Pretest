@@ -82,6 +82,9 @@ def proses():
 
     header_fill = PatternFill(start_color="BDD7EE", end_color="BDD7EE", fill_type="solid")
     alt_fill = PatternFill(start_color="F2F2F2", end_color="F2F2F2", fill_type="solid")
+    red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+
+    ws.title = "Presensi"
 
     for i, row in enumerate(ws.iter_rows(min_row=1, max_row=ws.max_row, max_col=ws.max_column), start=1):
         for cell in row:
@@ -95,6 +98,16 @@ def proses():
             elif i % 2 == 0:
                 cell.fill = alt_fill
 
+        status_cell = row[5]
+        if status_cell.value == "Tidak Hadir":
+            for c in row:
+                c.fill = red_fill
+
+    column_widths = [18, 15, 12, 30, 10, 15, 10]
+    for i, width in enumerate(column_widths, start=1):
+        col_letter = get_column_letter(i)
+        ws.column_dimensions[col_letter].width = width
+
     ws.auto_filter.ref = ws.dimensions
 
     output_final = BytesIO()
@@ -107,13 +120,13 @@ def proses():
         as_attachment=True
     )
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
 
 # def handler(environ, start_response):
 #     return app(environ, start_response)
