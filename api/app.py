@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return send_file('index.html')
+    return send_file('../index.html')
 
 @app.route('/proses', methods=['POST'])
 def proses():
