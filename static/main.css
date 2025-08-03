@@ -179,7 +179,7 @@ body {
 .download-icon {
   width: 35px;
   height: 35px;
-  background: url("static/icon/download_icon.svg") no-repeat center;
+  background: url("icon/download_icon.svg") no-repeat center;
   background-size: contain;
 }
 
