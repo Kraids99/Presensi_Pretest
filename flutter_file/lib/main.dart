@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_file/download_card.dart';
+import 'package:flutter_file/services/presensi_api.dart';
+import 'package:open_filex/open_filex.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +26,50 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final api = PresensiApi();
+  File? logFile, preFile;
+  bool busy = false;
+  double prog = 0;
+
+  Future<void> pilihLog() async {
+    logFile = await api.pickExcelOrCsv();
+    setState(() {});
+  }
+
+  Future<void> pilihPre() async {
+    preFile = await api.pickExcelOrCsv();
+    setState(() {});
+  }
+
+  Future<void> proses() async {
+    if (logFile == null || preFile == null) return;
+    setState(() {
+      busy = true;
+      prog = 0;
+    });
+    try {
+      final result = await api.kirimDanAmbil(
+        log: logFile!,
+        pretest: preFile!,
+        onSendProgress: (s, t) => setState(() => prog = t == 0 ? 0 : s / t),
+      );
+      await OpenFilex.open(result.path); // buka hasil
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Disimpan: ${result.path}')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Gagal: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,14 +120,33 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   child: LayoutBuilder(
                     builder: (context, c) {
+                      final logName = logFile?.path
+                          .split(Platform.pathSeparator)
+                          .last;
+                      final preName = preFile?.path
+                          .split(Platform.pathSeparator)
+                          .last;
+
                       final isWide = c.maxWidth > 500;
                       final children = [
-                        Expanded(child: UploadCard(title: 'Data Log')),
+                        Expanded(
+                          child: UploadCard(
+                            title: 'Data Log',
+                            onPick: pilihLog,
+                            pickedName: logName,
+                          ),
+                        ),
                         SizedBox(
                           width: isWide ? 24 : 0,
                           height: isWide ? 0 : 24,
                         ),
-                        Expanded(child: UploadCard(title: 'Data Pretest')),
+                        Expanded(
+                          child: UploadCard(
+                            title: 'Data Pretest',
+                            onPick: pilihPre,
+                            pickedName: preName,
+                          ),
+                        ),
                       ];
 
                       return isWide
@@ -96,7 +163,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
 
                 const SizedBox(height: 28),
-                const DownloadCard(),
+                DownloadCard(
+                  enabled: logFile != null && preFile != null,
+                  busy: busy,
+                  progress: prog,
+                  onPressed: proses,
+                ),
               ],
             ),
           ),
@@ -108,7 +180,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class UploadCard extends StatelessWidget {
   final String title;
-  const UploadCard({super.key, required this.title});
+  final VoidCallback onPick; // <— tambah
+  final String? pickedName;
+  const UploadCard({
+    super.key,
+    required this.title,
+    required this.onPick,
+    this.pickedName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +219,7 @@ class UploadCard extends StatelessWidget {
               child: Column(
                 children: [
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: onPick, // <— gunakan handler
                     icon: const Icon(Icons.insert_drive_file),
                     label: const Text('Pilih File'),
                     style: ElevatedButton.styleFrom(
@@ -156,9 +235,10 @@ class UploadCard extends StatelessWidget {
                       elevation: 6,
                     ),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   Text(
-                    'Format: CSV atau Excel',
+                    pickedName ?? 'Format: CSV atau Excel',
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: const Color(0xFF6B7280),
                     ),
