@@ -42,7 +42,7 @@ except Exception as e:
 print("File berhasil dibaca.")
 
 df_attempts = df_log[
-    df_log["Event name"].str.contains("attempt started", case=False, na=False)
+    df_log["Event name"].str.contains("attempt started | attempt updated", case=False, na=False)
 ]
 
 def is_ip_luar(ip):
