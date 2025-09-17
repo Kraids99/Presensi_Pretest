@@ -39,8 +39,7 @@ def proses_presensi(log_path, pretest_path):
                      .agg({
                         "Time": "min",
                         "IP address": lambda x: list(x)
-                    })
-                     .reset_index())
+                    }).reset_index())
 
     df_log_result["Status"] = "Hadir"
     df_log_result["Catatan"] = df_log_result["IP address"].apply(catatan_ip_list)
@@ -52,7 +51,7 @@ def proses_presensi(log_path, pretest_path):
     )
 
     df_pretest["NPM"] = df_pretest["Email address"].str.split("@").str[0]
-    df_pretest["Nilai"] = df_pretest["Grade/100.00"].str.split(".").str[0]
+    df_pretest["Nilai"] = df_pretest["Grade/100.00"].astype(str).str.split(".").str[0]
 
     df_pretest_result = df_pretest[["NPM", "User full name", "Nilai"]].iloc[:-1]
 

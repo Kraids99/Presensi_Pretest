@@ -34,7 +34,7 @@ def proses():
 
     df_pretest["User full name"] = (df_pretest["First name"].astype(str).str.strip() + " " +df_pretest["Last name"].astype(str).str.strip())
     df_pretest["NPM"] = df_pretest["Email address"].str.split("@").str[0]
-    df_pretest["Nilai"] = df_pretest["Grade/100.00"].str.split(".").str[0]
+    df_pretest["Nilai"] = df_pretest["Grade/100.00"].astype(str).str.split(".").str[0]
 
     df_pretest_result = df_pretest[["NPM", "User full name", "Nilai"]].iloc[:-1]
 
