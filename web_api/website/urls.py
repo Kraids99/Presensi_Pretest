@@ -18,7 +18,7 @@ def proses():
     df_pretest = read_file(pretest_file)
 
     df_attempts = df_log[
-        df_log["Event name"].str.contains("attempt started | attempt updated | attempt submitted", case=False, na=False)
+        df_log["Event name"].str.contains(r"Quiz attempt (started|updated|submitted)", case=False, na=False)
     ]
 
     df_log_result = (df_attempts.groupby("User full name")
@@ -27,10 +27,12 @@ def proses():
               "IP address": lambda x: list(x) # semua ip jadi list
           })
           .reset_index())
-    
+
     df_log_result["Status"] = "Hadir"
     df_log_result["Catatan"] = df_log_result["IP address"].apply(catatan_ip_list)
     df_log_result["IP address"] = df_log_result["IP address"].apply(pilih_ip_tampil)
+
+    # .apply(pilih_ip_tampil)
 
     df_pretest["User full name"] = (df_pretest["First name"].astype(str).str.strip() + " " +df_pretest["Last name"].astype(str).str.strip())
     df_pretest["NPM"] = df_pretest["Email address"].str.split("@").str[0]

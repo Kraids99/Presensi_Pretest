@@ -32,7 +32,7 @@ def proses_presensi(log_path, pretest_path):
     df_pretest = read_file(pretest_path)
 
     df_attempts = df_log[
-        df_log["Event name"].str.contains("attempt started|attempt updated|attempt submitted",case=False, na=False)
+        df_log["Event name"].str.contains(r"Quiz attempt (started|updated|submitted)",case=False, na=False)
     ]
 
     df_log_result = (df_attempts.groupby("User full name")
