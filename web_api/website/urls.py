@@ -38,6 +38,9 @@ def proses():
     df_pretest["NPM"] = df_pretest["Email address"].str.split("@").str[0]
     df_pretest["Nilai"] = df_pretest["Grade/100.00"].astype(str).str.split(".").str[0]
 
+    grade_col = [col for col in df_pretest.columns if col.startswith("Grade/")]
+    df_pretest["Nilai"] = df_pretest[grade_col].astype(str).str.split(".").str[0]
+
     df_pretest_result = df_pretest[["NPM", "User full name", "Nilai"]].iloc[:-1]
 
     df_merge_result = pd.merge(
